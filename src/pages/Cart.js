@@ -10,6 +10,7 @@ class Cart extends React.Component {
     this.state = {
       emptyCart: true,
       renderList: [],
+      total: 0,
     };
   }
 
@@ -24,6 +25,7 @@ class Cart extends React.Component {
     }
 
     const currentProducts = JSON.parse(localStorage.getItem('cartProducts'));
+
     const renderList = currentProducts.map((product) => (
       <li className="liProductCart" key={ product.id }>
         <div className="containerDiv1">
@@ -81,7 +83,11 @@ class Cart extends React.Component {
         </div>
       </li>
     ));
-    this.setState({ emptyCart: false, renderList });
+
+    const total = currentProducts
+      .reduce((acc, product) => acc + (product.price * product.quantity), 0);
+
+    this.setState({ emptyCart: false, renderList, total });
   };
 
   handleClick = (id, action) => {
@@ -104,7 +110,7 @@ class Cart extends React.Component {
   };
 
   render() {
-    const { emptyCart, renderList } = this.state;
+    const { emptyCart, renderList, total } = this.state;
 
     if (emptyCart === true) {
       return (
@@ -134,6 +140,10 @@ class Cart extends React.Component {
 
         <div className="productListCart">
           <ul className="listProductsCart">{renderList}</ul>
+          <ul>
+            Total: R$
+            {total.toFixed(2)}
+          </ul>
 
           <Link
             to="/checkout"
